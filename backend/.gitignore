@@ -1,0 +1,9 @@
+__pycache__
+.venv
+controllers/__pycache__
+middleware/__pycache__
+models/__pycache__
+routes/__pycache__
+schema/__pycache__
+utils/__pycache__
+SecondBrain.db
