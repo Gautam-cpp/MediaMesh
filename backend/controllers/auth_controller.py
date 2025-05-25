@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
-
+from fastapi.encoders import jsonable_encoder
 from models.user import User
 from utils.hash import get_password_hash, verify_password
 from utils.token import create_access_token, get_current_user
@@ -28,7 +28,15 @@ def signup(user, session):
         session.refresh(new_user)
 
         access_token = create_access_token(data={"sub": str(new_user.id)})
-        return JSONResponse(content={"message": "User Created Successfully", "access_token": access_token, "token_type": "bearer"}, status_code=status.HTTP_201_CREATED)
+        return JSONResponse(
+            content={
+                "message": "User Created Successfully",
+                "user": jsonable_encoder(new_user.model_dump(exclude={"password"})),
+                "access_token": access_token,
+                "token_type": "bearer"
+            },
+            status_code=status.HTTP_201_CREATED
+        )
        
    
     except IntegrityError:
@@ -53,7 +61,15 @@ def login(user, session):
         return JSONResponse(content={"message": "Incorrect password"}, status_code=status.HTTP_401_UNAUTHORIZED)
     
     access_token = create_access_token(data={"sub": str(existing_user.id)})
-    return JSONResponse(content={"message": "Login Successful", "user": user, "access_token": access_token, "token_type": "bearer"}, status_code=status.HTTP_201_CREATED)
+    return JSONResponse(
+        content={
+            "message": "Login successful",
+            "user": jsonable_encoder(existing_user.model_dump(exclude={"password"})),
+            "access_token": access_token,
+            "token_type": "bearer"
+        },
+        status_code=status.HTTP_200_OK
+    )
 
 
 def isValidUser(token, session):
