@@ -3,9 +3,10 @@ from fastapi import HTTPException, status
 from sqlmodel import select
 from models.content import Content
 from fastapi.responses import JSONResponse
-
+from fastapi.encoders import jsonable_encoder
 
 def add_content(content, session, current_user):
+    print("Adding content:", content)
     try:
         existing_content = session.exec(select(Content).where(Content.user_id == current_user.id).where(Content.link == content.link)).first()
         if existing_content:
@@ -21,7 +22,13 @@ def add_content(content, session, current_user):
         session.add(new_content)
         session.commit()
         session.refresh(new_content)
-        return JSONResponse(content={"message": "Content created successfully", "content": new_content}, status_code=status.HTTP_201_CREATED)
+        return JSONResponse(
+            content={
+                "message": "Content created successfully",
+                "content": jsonable_encoder(new_content)
+            },
+            status_code=status.HTTP_201_CREATED
+        )
     
     except IntegrityError:
         session.rollback()
