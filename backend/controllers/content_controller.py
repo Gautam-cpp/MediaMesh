@@ -36,10 +36,10 @@ def add_content(content, session, current_user):
     
 
 def get_content(session, current_user):
-    return session.exec(select(Content).where(Content.user_id == current_user.id)).all()
+    return session.exec(select(Content).where(Content.user_id == current_user.id).order_by(Content.created_at.desc())).all()
 
 def get_content_by_type(session, current_user, content_type):
-    return session.exec(select(Content).where(Content.user_id == current_user.id).where(Content.content_type == content_type)).all()
+    return session.exec(select(Content).where(Content.user_id == current_user.id).where(Content.content_type == content_type).order_by(Content.created_at.desc())).all()
 
 def delete_content(session, content_id, current_user):
     content = session.exec(select(Content).where(Content.id == content_id).where(Content.user_id == current_user.id)).first()
