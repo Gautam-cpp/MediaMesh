@@ -20,3 +20,13 @@ class UserSchema(BaseModel):
         if not re.search(r"[@$!%*?&]", v):
             raise ValueError("Must contain at least one special character (@$!%*?&)")
         return v
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr
+    password: str
+
+    @field_validator("password")
+    def validate_password(cls, v):
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters")
+        return v
