@@ -6,10 +6,7 @@ from models.user import User
 from sqlmodel import select, Session
 from database import engine
 from uuid import UUID
-
 from session_Dependency import app
-
-
 
 @app.middleware("http")
 async def verify_jwt(request: Request, call_next):
@@ -51,5 +48,5 @@ async def verify_jwt(request: Request, call_next):
         raise HTTPException(status_code=401, detail="Invalid token")
     
     response = await call_next(request)
-    print(response)
+    
     return response
