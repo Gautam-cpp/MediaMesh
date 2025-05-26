@@ -7,6 +7,7 @@ from sqlmodel import select, Session
 from database import engine
 from uuid import UUID
 from session_Dependency import app
+from config import settings
 
 @app.middleware("http")
 async def verify_jwt(request: Request, call_next):
@@ -29,7 +30,7 @@ async def verify_jwt(request: Request, call_next):
     
     try:
        
-        payload = jwt.decode(token, "0c2f74a6e981dd16b320e1e3e5b9a06c79817b54371bd79cf21e8443135e1deb", algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY , algorithms=settings.ALGORITHM)
 
         user_id = UUID(payload.get("sub"))  
         if not user_id:
