@@ -11,7 +11,7 @@ from session_Dependency import app
 @app.middleware("http")
 async def verify_jwt(request: Request, call_next):
 
-    public_paths = ["/api/v1/auth/login", "/api/v1/auth/signup"]
+    public_paths = ["/api/v1/auth/login", "/api/v1/auth/signup", "/docs" , "/redoc", "/openapi.json"]
 
     if request.url.path in public_paths:
         return await call_next(request)
@@ -50,3 +50,12 @@ async def verify_jwt(request: Request, call_next):
     response = await call_next(request)
     
     return response
+
+
+def get_current_user(request: Request) -> User:
+    print(request)
+    user = getattr(request.state, "user", None)
+    if not user:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+    return user
+

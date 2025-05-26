@@ -1,18 +1,10 @@
 from controllers.content_controller import add_content, get_content, get_content_by_type, delete_content
 from schema.content import contentSchema
 from session_Dependency import SessionDep
-from fastapi import Depends, Request, HTTPException
-from typing import Annotated
-from middleware.auth_middleware import verify_jwt
+from fastapi import Depends, Request
+
+from middleware.auth_middleware import get_current_user
 from models.user import User
-
-def get_current_user(request: Request) -> User:
-    print(request)
-    user = getattr(request.state, "user", None)
-    if not user:
-        raise HTTPException(status_code=401, detail="User not authenticated")
-    return user
-
 from fastapi import APIRouter
 
 

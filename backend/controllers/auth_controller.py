@@ -1,11 +1,11 @@
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
-from fastapi import HTTPException, status
+from fastapi import status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from models.user import User
 from utils.hash import get_password_hash, verify_password
-from utils.token import create_access_token, get_current_user
+from utils.token import create_access_token
 import traceback
 
 
@@ -71,7 +71,3 @@ def login(user, session):
         status_code=status.HTTP_200_OK
     )
 
-
-def isValidUser(token, session):
-    user = get_current_user(token, session)
-    return JSONResponse(content={"message": "User is valid", "user": user}, status_code=status.HTTP_200_OK)
